@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             (context) =>
                 const LoginScreen(), // Puedes cambiar a BienvenidaRegistroScreen() si lo prefieres
         '/registro': (context) => const RegistroUsuarioScreen(),
-        '/bienvenida': (context) => const BienvenidaRegistroScreen(),
+        '/bienvenida': (context) => BienvenidaRegistroScreen(),
       },
     );
   }
