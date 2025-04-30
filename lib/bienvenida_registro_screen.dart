@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tipo_vehiculo_button.dart'; // Import local
 import 'registro_vehiculo_screen.dart'; // Import local
-import 'bienvenida_registro_screen.dart';
+//import 'bienvenida_registro_screen.dart';
 
 class BienvenidaRegistroScreen extends StatelessWidget {
   @override

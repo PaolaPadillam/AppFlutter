@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Login.dart';
 import 'registro_usuario.dart';
+import 'bienvenida_registro_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginScreen(),
         '/registro': (context) => const RegistroUsuarioScreen(),
+        '/bienvenida': (context) => BienvenidaRegistroScreen(), // Nueva ruta
       },
     );
   }

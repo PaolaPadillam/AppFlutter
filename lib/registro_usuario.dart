@@ -22,7 +22,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.23.116/Control_vehicular/registro.php"),
+        Uri.parse("http://192.168.12.5/Control_vehicular/registro.php"),
         body: {
           "nombre": _nombreController.text.trim(),
           "matricula_o_id": _numControlController.text.trim(),
