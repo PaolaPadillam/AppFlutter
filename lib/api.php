@@ -1,67 +1,83 @@
 <?php
-header("Access-Control-Allow-Origin: *"); // Permite acceso desde cualquier origen
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
-// Mostrar errores para depurar
+// Manejar preflight request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0);
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Incluir la conexión a la base de datos
 require 'db.php';
 
-// Crear conexión
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-// Verificar conexión
 if ($conn->connect_error) {
+    http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Error de conexión a la base de datos: " . $conn->connect_error
+        "message" => "Error de conexión a la base de datos"
     ]);
     exit;
 }
 
-// Leer los datos enviados en el cuerpo de la solicitud
-$data = json_decode(file_get_contents("php://input"));
+// Obtener datos del POST (soporta tanto JSON como form-data)
+$input = file_get_contents("php://input");
+$data = json_decode($input, true);
 
-if (!isset($data->matricula_o_id) || !isset($data->password)) {
+if (json_last_error() !== JSON_ERROR_NONE) {
+    // Si no es JSON válido, probar con form-data
+    $data = $_POST;
+}
+
+if (empty($data['matricula_o_id']) || empty($data['password'])) {
+    http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Faltan campos necesarios."
+        "message" => "Matrícula y contraseña son requeridas"
     ]);
     exit;
 }
 
-$matricula = $conn->real_escape_string($data->matricula_o_id);
-$password = $data->password;
+$matricula = $conn->real_escape_string(trim($data['matricula_o_id']));
+$password = $data['password'];
 
-// Buscar al usuario por matrícula o ID
-$sql = "SELECT * FROM usuarios WHERE matricula_o_id = '$matricula'";
+// Buscar usuario con LIMIT 1 para mejor performance
+$sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE matricula_o_id = '$matricula' LIMIT 1";
 $result = $conn->query($sql);
 
 if ($result->num_rows == 0) {
+    http_response_code(404);
     echo json_encode([
         "success" => false,
-        "message" => "No se encontró ningún usuario con esa matrícula."
+        "message" => "Usuario no encontrado"
     ]);
     exit;
 }
 
-// El usuario existe, verificamos la contraseña
 $user = $result->fetch_assoc();
+
 if (password_verify($password, $user['password'])) {
-    // La contraseña es correcta
+    // Login exitoso
+    http_response_code(200);
     echo json_encode([
         "success" => true,
         "message" => "Inicio de sesión exitoso",
-        "usuario_id" => $user['id_usuario']
+        "usuario" => [
+            "id" => $user['id_usuario'],
+            "nombre" => $user['nombre'],
+            "matricula" => $matricula
+        ]
     ]);
 } else {
-    // Contraseña incorrecta
+    http_response_code(401);
     echo json_encode([
         "success" => false,
-        "message" => "Contraseña incorrecta."
+        "message" => "Contraseña incorrecta"
     ]);
 }
 

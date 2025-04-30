@@ -22,7 +22,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.8/Control_vehicular/registro.php"),
+        Uri.parse("http://192.168.23.116/Control_vehicular/registro.php"),
         body: {
           "nombre": _nombreController.text.trim(),
           "matricula_o_id": _numControlController.text.trim(),
@@ -36,7 +36,8 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
         if (data["success"] == true) {
           mostrarDialogo(
             titulo: "Registro Exitoso",
-            mensaje: "¡Bienvenid@, ${_nombreController.text}!",
+            mensaje:
+                "¡Bienvenid@, ${_nombreController.text}, ya te puedes loggear!",
             esExito: true,
           );
         } else {
@@ -104,7 +105,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Registro de Usuario"),
-        backgroundColor: const Color.fromARGB(255, 182, 171, 15),
+        backgroundColor: const Color.fromARGB(255, 248, 235, 51),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'registro_usuario.dart';
 // Aquí importarías tu pantalla principal después de login
-// import 'home_screen.dart';
+import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      const String url = "http://192.168.1.8/Control_vehicular/api.php";
+      const String url = "http://192.168.23.116/Control_vehicular/api.php";
 
       final response = await http.post(
         Uri.parse(url),
@@ -40,9 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // Navegar a otra pantalla si el login es exitoso
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => const RegistroUsuarioScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
           // Debería ser HomeScreen() u otra pantalla principal
         );
       } else {
